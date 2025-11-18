@@ -11,14 +11,14 @@ class GroceryList extends Component
     public $newItemName = '';
     public $newItemQuantity = 1;
     public $newItemPrice = '';
-    public $newItemCategory = '';
+    public $newItemBrand = '';
     public $newItemStore = '';
     
     public $editingItemId = null;
     public $editItemName = '';
     public $editItemQuantity = 1;
     public $editItemPrice = '';
-    public $editItemCategory = '';
+    public $editItemBrand = '';
     public $editItemStore = '';
 
     public function mount()
@@ -43,11 +43,11 @@ class GroceryList extends Component
             'name' => $this->newItemName,
             'quantity' => $this->newItemQuantity,
             'price' => $this->newItemPrice ?: null,
-            'category' => $this->newItemCategory,
+            'category' => $this->newItemBrand, // Using category column for brand
             'store' => $this->newItemStore,
         ]);
 
-        $this->reset(['newItemName', 'newItemQuantity', 'newItemPrice', 'newItemCategory', 'newItemStore']);
+        $this->reset(['newItemName', 'newItemQuantity', 'newItemPrice', 'newItemBrand', 'newItemStore']);
         $this->loadItems();
     }
 
@@ -58,7 +58,7 @@ class GroceryList extends Component
         $this->editItemName = $item->name;
         $this->editItemQuantity = $item->quantity;
         $this->editItemPrice = $item->price;
-        $this->editItemCategory = $item->category;
+        $this->editItemBrand = $item->category; // Using category column for brand
         $this->editItemStore = $item->store;
     }
 
@@ -75,7 +75,7 @@ class GroceryList extends Component
             'name' => $this->editItemName,
             'quantity' => $this->editItemQuantity,
             'price' => $this->editItemPrice ?: null,
-            'category' => $this->editItemCategory,
+            'category' => $this->editItemBrand, // Using category column for brand
             'store' => $this->editItemStore,
         ]);
 
@@ -86,7 +86,7 @@ class GroceryList extends Component
     public function cancelEdit()
     {
         $this->editingItemId = null;
-        $this->reset(['editItemName', 'editItemQuantity', 'editItemPrice', 'editItemCategory', 'editItemStore']);
+        $this->reset(['editItemName', 'editItemQuantity', 'editItemPrice', 'editItemBrand', 'editItemStore']);
     }
 
     public function togglePurchased($itemId)
