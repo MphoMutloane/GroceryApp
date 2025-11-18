@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\GroceryItem;
+use Illuminate\Support\Facades\Auth;
 
 class GroceryList extends Component
 {
@@ -28,7 +29,7 @@ class GroceryList extends Component
 
     public function loadItems()
     {
-        $this->items = GroceryItem::all();
+        $this->items = GroceryItem::where('user_id', Auth::id())->get();
     }
 
     public function addItem()
@@ -43,8 +44,9 @@ class GroceryList extends Component
             'name' => $this->newItemName,
             'quantity' => $this->newItemQuantity,
             'price' => $this->newItemPrice ?: null,
-            'category' => $this->newItemBrand, // Using category column for brand
+            'category' => $this->newItemBrand,
             'store' => $this->newItemStore,
+            'user_id' => Auth::id(),
         ]);
 
         $this->reset(['newItemName', 'newItemQuantity', 'newItemPrice', 'newItemBrand', 'newItemStore']);
@@ -53,12 +55,12 @@ class GroceryList extends Component
 
     public function startEdit($itemId)
     {
-        $item = GroceryItem::find($itemId);
+        $item = GroceryItem::where('user_id', Auth::id())->find($itemId);
         $this->editingItemId = $itemId;
         $this->editItemName = $item->name;
         $this->editItemQuantity = $item->quantity;
         $this->editItemPrice = $item->price;
-        $this->editItemBrand = $item->category; // Using category column for brand
+        $this->editItemBrand = $item->category;
         $this->editItemStore = $item->store;
     }
 
@@ -70,12 +72,12 @@ class GroceryList extends Component
             'editItemPrice' => 'nullable|numeric|min:0'
         ]);
 
-        $item = GroceryItem::find($this->editingItemId);
+        $item = GroceryItem::where('user_id', Auth::id())->find($this->editingItemId);
         $item->update([
             'name' => $this->editItemName,
             'quantity' => $this->editItemQuantity,
             'price' => $this->editItemPrice ?: null,
-            'category' => $this->editItemBrand, // Using category column for brand
+            'category' => $this->editItemBrand,
             'store' => $this->editItemStore,
         ]);
 
@@ -91,18 +93,17 @@ class GroceryList extends Component
 
     public function togglePurchased($itemId)
     {
-        $item = GroceryItem::find($itemId);
+        $item = GroceryItem::where('user_id', Auth::id())->find($itemId);
         $item->update(['purchased' => !$item->purchased]);
         $this->loadItems();
     }
 
     public function deleteItem($itemId)
     {
-        GroceryItem::find($itemId)->delete();
+        GroceryItem::where('user_id', Auth::id())->find($itemId)->delete();
         $this->loadItems();
     }
 
-    // Calculate total estimated cost
     public function getTotalEstimatedCostProperty()
     {
         return $this->items->sum('total');
